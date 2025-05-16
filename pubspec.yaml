@@ -1,0 +1,21 @@
+name: sleep_chart
+description: A Flutter project for displaying sleep duration charts with different sleep stages.
+version: 1.0.1
+# repository: https://github.com/my_org/my_repo
+license: MIT 
+homepage: https://github.com/Azad-Zhang/sleep_chart
+repository: https://github.com/Azad-Zhang/sleep_chart
+
+environment:
+  sdk: '>=2.19.0 <4.0.0'
+  flutter: ">=2.19.0"     # Flutter SDK 最低版本
+
+# Add regular dependencies here.
+dependencies:
+  flutter:
+    sdk: flutter
+  # path: ^1.8.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter  # 测试依赖（可选但推荐）
