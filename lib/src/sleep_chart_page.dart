@@ -845,14 +845,10 @@ int getHeightFromStage(SleepStage stage) {
 
 /// 创建睡眠时长图表数据
 /// 根据原始睡眠详情数据计算每个阶段在图表中的宽度和持续时间
-/// @param parentWidth 父容器宽度
 /// @param details 原始睡眠详情数据列表
-/// @param totalDuration 总睡眠时长（分钟）
 /// @return 处理后的睡眠详情图表数据列表
 List<SleepDetailChart> createSleepDurationData({
-  required double parentWidth,
   required List<SleepDetail> details,
-  required int totalDuration,
 }) {
   if (details.isEmpty) return [];
 
@@ -867,18 +863,10 @@ List<SleepDetailChart> createSleepDurationData({
         ? nextDetail.time.difference(currentDetail.time).inMinutes
         : 0;
 
-    // 计算百分比
-    final percentage = durationMinutes / totalDuration;
-
-    // 计算宽度
-    final width = parentWidth * percentage;
-
     // 创建SleepDetailChart
     result.add(SleepDetailChart(
       stage: currentDetail.stage,
-      // width: width,
       startTime: currentDetail.time,
-      // endTime: nextDetail?.time ?? currentDetail.time.add(Duration(minutes: durationMinutes)),
       duration: durationMinutes,
     ));
   }
