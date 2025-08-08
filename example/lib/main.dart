@@ -35,9 +35,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   // 根据睡眠阶段定义固定颜色
   final Map<SleepStage, Color> stageColors = {
-    SleepStage.light: Color(0xFF4870F3), // 浅蓝色
-    SleepStage.deep: Color(0xFF21B2A1), // 青色
-    SleepStage.rem: Color(0xFFFCD166), // 黄色
+    SleepStage.awake: Color(0xFFFFC870),
+    SleepStage.rem: Color(0xFFFFC870),
+    SleepStage.light: Color(0xFFB570FF),
+    SleepStage.deep: Color(0xFF8480FF),
   };
 
   @override
@@ -50,88 +51,70 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Container(
-          width: 300,
-          height: 278,
+          margin: EdgeInsets.symmetric(horizontal: 12),
+          height: 230,
           child: SleepDurationChartWidget(
-            heightUnit: 1 / 8.0,
+            heightUnit: 1 / 5.0,
             titleHeight: 45.0,
             titleGap: 10.0,
             xAxisTitleOffset: 8.0,
             xAxisTitleHeight: 15.0,
-            bgColor: Color.fromRGBO(72, 112, 243, 0.04),
+            horizontalLineCount: 5,
+            bgColor: Color(0xFFF5F6F7),
+            stageColors: stageColors,
+            startTime: DateTime.now(),
+            endTime: DateTime.now().add(Duration(minutes: 340)),
             details: [
               SleepDetailChart(
-                model: SleepStage.light,
-                width: 5,
+                stage: SleepStage.light,
                 startTime: DateTime.now(),
-                endTime: DateTime.now().add(Duration(minutes: 5)),
                 duration: 5,
               ),
               SleepDetailChart(
-                model: SleepStage.deep,
-                width: 5,
+                stage: SleepStage.deep,
                 startTime: DateTime.now().add(Duration(minutes: 5)),
-                endTime: DateTime.now().add(Duration(minutes: 10)),
                 duration: 5,
               ),
               SleepDetailChart(
-                model: SleepStage.rem,
-                width: 40,
+                stage: SleepStage.rem,
+                // width: perWidth * 40,
                 startTime: DateTime.now().add(Duration(minutes: 10)),
-                endTime: DateTime.now().add(Duration(minutes: 50)),
                 duration: 40,
               ),
               SleepDetailChart(
-                model: SleepStage.light,
-                width: 68,
+                stage: SleepStage.light,
                 startTime: DateTime.now().add(Duration(minutes: 50)),
-                endTime: DateTime.now().add(Duration(minutes: 118)),
                 duration: 68,
               ),
               SleepDetailChart(
-                model: SleepStage.deep,
-                width: 42,
+                stage: SleepStage.deep,
                 startTime: DateTime.now().add(Duration(minutes: 118)),
-                endTime: DateTime.now().add(Duration(minutes: 160)),
                 duration: 42,
               ),
               SleepDetailChart(
-                model: SleepStage.rem,
-                width: 35,
+                stage: SleepStage.rem,
                 startTime: DateTime.now().add(Duration(minutes: 160)),
-                endTime: DateTime.now().add(Duration(minutes: 195)),
                 duration: 35,
               ),
               SleepDetailChart(
-                model: SleepStage.light,
-                width: 32,
+                stage: SleepStage.light,
                 startTime: DateTime.now().add(Duration(minutes: 195)),
-                endTime: DateTime.now().add(Duration(minutes: 227)),
                 duration: 32,
               ),
               SleepDetailChart(
-                model: SleepStage.deep,
-                width: 33,
+                stage: SleepStage.deep,
                 startTime: DateTime.now().add(Duration(minutes: 227)),
-                endTime: DateTime.now().add(Duration(minutes: 260)),
                 duration: 33,
               ),
-            ],
-            startTime: DateTime.now(),
-            endTime: DateTime.now().add(Duration(minutes: 260)),
-            stageColors: stageColors,
-            sleepStageStyles: [
-              SleepStageStyle(
-                gradientColor: [Color(0xFF4870F3), Color(0xFF21B2A1)],
-                value: SleepStageStyleValue.deepAndLight,
+              SleepDetailChart(
+                stage: SleepStage.light,
+                startTime: DateTime.now().add(Duration(minutes: 260)),
+                duration: 33,
               ),
-              SleepStageStyle(
-                gradientColor: [Color(0xFFFCD166), Color(0xFF21B2A1)],
-                value: SleepStageStyleValue.deepAndRem,
-              ),
-              SleepStageStyle(
-                gradientColor: [Color(0xFFFCD169), Color(0xFF4870F3)],
-                value: SleepStageStyleValue.lightAndRem,
+              SleepDetailChart(
+                stage: SleepStage.rem,
+                startTime: DateTime.now().add(Duration(minutes: 293)),
+                duration: 47,
               ),
             ],
           ),
