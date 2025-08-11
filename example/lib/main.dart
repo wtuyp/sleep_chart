@@ -35,10 +35,20 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   // 根据睡眠阶段定义固定颜色
   final Map<SleepStage, Color> stageColors = {
-    SleepStage.awake: Color(0xFFFFC870),
-    SleepStage.rem: Color(0xFFFFC870),
-    SleepStage.light: Color(0xFFB570FF),
-    SleepStage.deep: Color(0xFF8480FF),
+    SleepStage.awake: Color(0xFFFF6B6B),  // 清醒 -红色
+    SleepStage.rem: Color(0xFFFFC870),    // 快速眼动 - 黄色
+    SleepStage.light: Color(0xFFB570FF),  // 浅睡眠 - 紫色
+    SleepStage.deep: Color(0xFF8480FF),   // 深睡眠 - 蓝色
+
+    // SleepStage.awake: Color(0xFFFF9A76),  // 清醒
+    // SleepStage.rem: Color(0xFF6EC5E9),    // 快速眼动
+    // SleepStage.light: Color(0xFFA3D8C6),  // 浅睡眠
+    // SleepStage.deep: Color(0xFF5E4FA2),   // 深睡眠
+
+    // SleepStage.awake: Color(0xFFE8B4B8),  // 清醒
+    // SleepStage.rem: Color(0xFF8FCACA),    // 快速眼动
+    // SleepStage.light: Color(0xFFD4C99E),  // 浅睡眠
+    // SleepStage.deep: Color(0xFF6D6875),   // 深睡眠
   };
   DateTime startTime = DateTime.now();
   late DateTime endTime = startTime.add(Duration(minutes: 340));

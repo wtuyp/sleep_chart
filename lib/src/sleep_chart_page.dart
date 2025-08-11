@@ -48,9 +48,10 @@ class SleepDurationPainter extends CustomPainter {
 
   /// 默认的睡眠阶段颜色映射
   static final Map<SleepStage, Color> _defaultStageColors = {
-    SleepStage.light: Color(0xFF4870F3), // 浅睡眠 - 浅蓝色
-    SleepStage.deep: Color(0xFF21B2A1),  // 深睡眠 - 青色
-    SleepStage.rem: Color(0xFFFCD166),   // 快速眼动 - 黄色
+    SleepStage.awake: Color(0xFFFF6B6B),  // 清醒 -红色
+    SleepStage.rem: Color(0xFFFFC870),    // 快速眼动 - 黄色
+    SleepStage.light: Color(0xFFB570FF),  // 浅睡眠 - 紫色
+    SleepStage.deep: Color(0xFF8480FF),   // 深睡眠 - 蓝色
   };
 
   /// 默认的底部信息文本样式
