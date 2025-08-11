@@ -27,6 +27,8 @@ class SleepDurationPainter extends CustomPainter {
   double curveEdgeHeight = 10.0;
   /// 指示器的水平位置
   double indicatorPosition;
+  /// 指示器是否显示
+  bool showIndicator = false;
   /// 每个分钟的宽度
   double minuteWidth;
 
@@ -98,7 +100,8 @@ class SleepDurationPainter extends CustomPainter {
     TextStyle? bottomInfoTextStyle,
     String Function(DateTime)? dateFormatter,
     this.indicatorPosition = 0.0, // 默认位置为0
-  })  : this.stageColors = stageColors ?? _defaultStageColors,
+    this.showIndicator = false,
+  }) : this.stageColors = stageColors ?? _defaultStageColors,
         this.bottomInfoTextStyle = bottomInfoTextStyle ?? _defaultBottomInfoTextStyle,
         this.dateFormatter = dateFormatter ?? _defaultDateFormatter;
 
@@ -114,10 +117,14 @@ class SleepDurationPainter extends CustomPainter {
     _drawBackground(canvas, size);
     // 绘制线条
     _drawLines(canvas, size);
-    // 绘制标题
-    _drawTitle(canvas, size);
-    //绘制指示条
-    _drawIndicator(canvas, size);
+
+    // 根据状态决定是否绘制指示器
+    if (showIndicator) {
+      //绘制指示条
+      _drawIndicator(canvas, size);
+      // 绘制标题
+      _drawTitle(canvas, size);
+    }
     // 绘制条形图
     _drawBarArea(canvas, size);
     // 绘制底部信息
@@ -640,6 +647,13 @@ class SleepDurationPainter extends CustomPainter {
     );
     canvas.drawRRect(bgRect, bgPaint);
 
+    // 创建边框画笔
+    final borderPaint = Paint()
+      ..color = Color(0xFFEBECED)
+      ..strokeWidth = 1.0
+      ..style = PaintingStyle.stroke;
+    canvas.drawRRect(bgRect, borderPaint);
+
     // 绘制主标题
     final x = bgX + (bgWidth - textPainter.width) / 2;
     final y = bgY + 2;
@@ -668,7 +682,7 @@ class SleepDurationPainter extends CustomPainter {
     final endY = startY + chartHeight;
 
     canvas.drawLine(
-      Offset(centerX, startY - titleGap - 1),
+      Offset(centerX, startY - titleGap - 8),
       Offset(centerX, endY),
       indicatorPaint,
     );
@@ -952,6 +966,7 @@ class SleepDurationChartWidget extends StatefulWidget {
 /// 管理图表的交互状态和指示器位置
 class _SleepDurationChartWidgetState extends State<SleepDurationChartWidget> {
   double _indicatorPosition = 0.0; // 指示器位置
+  bool _showIndicator = false; // 指示器显示状态
   bool _isFirstInit = true; // 是否首次初始化
   double _minuteWidth = 0.0;
 
@@ -973,16 +988,23 @@ class _SleepDurationChartWidgetState extends State<SleepDurationChartWidget> {
         return GestureDetector(
           // 开始水平拖动
           onHorizontalDragStart: (details) {
-            _indicatorPosition = details.localPosition.dx;
+            setState(() {
+              _indicatorPosition = details.localPosition.dx;
+              _showIndicator = true;
+            });
           },
           // 水平拖动更新
           onHorizontalDragUpdate: (details) {
             setState(() {
               _indicatorPosition = details.localPosition.dx.clamp(0.0, constraints.maxWidth);
+              _showIndicator = true;
             });
           },
           // 结束水平拖动
           onHorizontalDragEnd: (details) {
+            setState(() {
+              _showIndicator = false; // 隐藏指示器
+            });
           },
           child: CustomPaint(
             painter: SleepDurationPainter(
@@ -1003,6 +1025,7 @@ class _SleepDurationChartWidgetState extends State<SleepDurationChartWidget> {
               bottomInfoTextStyle: widget.bottomInfoTextStyle,
               dateFormatter: widget.dateFormatter,
               indicatorPosition: _indicatorPosition,
+              showIndicator: _showIndicator,
               minuteWidth: _minuteWidth,
             ),
             size: Size(constraints.maxWidth, constraints.maxHeight),
