@@ -53,6 +53,128 @@ class _MyHomePageState extends State<MyHomePage> {
   DateTime startTime = DateTime.now();
   late DateTime endTime = startTime.add(Duration(minutes: 340));
 
+  List<SleepDetailChart> details = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        details = [
+          SleepDetailChart(
+            stage: SleepStage.light,
+            startTime: startTime,
+            duration: 5,
+          ),
+          SleepDetailChart(
+            stage: SleepStage.deep,
+            startTime: startTime.add(Duration(minutes: 5)),
+            duration: 5,
+          ),
+          SleepDetailChart(
+            stage: SleepStage.rem,
+            startTime: startTime.add(Duration(minutes: 10)),
+            duration: 40,
+          ),
+          SleepDetailChart(
+            stage: SleepStage.light,
+            startTime: startTime.add(Duration(minutes: 50)),
+            duration: 68,
+          ),
+          SleepDetailChart(
+            stage: SleepStage.deep,
+            startTime: startTime.add(Duration(minutes: 118)),
+            duration: 42,
+          ),
+          SleepDetailChart(
+            stage: SleepStage.rem,
+            startTime: startTime.add(Duration(minutes: 160)),
+            duration: 35,
+          ),
+          SleepDetailChart(
+            stage: SleepStage.light,
+            startTime: startTime.add(Duration(minutes: 195)),
+            duration: 32,
+          ),
+          SleepDetailChart(
+            stage: SleepStage.deep,
+            startTime: startTime.add(Duration(minutes: 227)),
+            duration: 33,
+          ),
+          SleepDetailChart(
+            stage: SleepStage.light,
+            startTime: startTime.add(Duration(minutes: 260)),
+            duration: 32,
+          ),
+          SleepDetailChart(
+            stage: SleepStage.rem,
+            startTime: startTime.add(Duration(minutes: 292)),
+            duration: 43,
+          ),
+          SleepDetailChart(
+            stage: SleepStage.awake,
+            startTime: startTime.add(Duration(minutes: 335)),
+            duration: 5,
+          ),
+        ];
+
+        // SleepDetail 转 SleepDetailChart
+        /*
+        details = createSleepDurationData(
+          totalDuration: 340,
+          details: [
+            SleepDetail(
+              stage: SleepStage.light,
+              time: startTime,
+            ),
+            SleepDetail(
+              stage: SleepStage.deep,
+              time: startTime.add(Duration(minutes: 5)),
+            ),
+            SleepDetail(
+              stage: SleepStage.rem,
+              time: startTime.add(Duration(minutes: 10)),
+            ),
+            SleepDetail(
+              stage: SleepStage.light,
+              time: startTime.add(Duration(minutes: 50)),
+            ),
+            SleepDetail(
+              stage: SleepStage.deep,
+              time: startTime.add(Duration(minutes: 118)),
+            ),
+            SleepDetail(
+              stage: SleepStage.rem,
+              time: startTime.add(Duration(minutes: 160)),
+            ),
+            SleepDetail(
+              stage: SleepStage.light,
+              time: startTime.add(Duration(minutes: 195)),
+            ),
+            SleepDetail(
+              stage: SleepStage.deep,
+              time: startTime.add(Duration(minutes: 227)),
+            ),
+            SleepDetail(
+              stage: SleepStage.light,
+              time: startTime.add(Duration(minutes: 260)),
+            ),
+            SleepDetail(
+              stage: SleepStage.rem,
+              time: startTime.add(Duration(minutes: 292)),
+            ),
+            SleepDetail(
+              stage: SleepStage.awake,
+              time: startTime.add(Duration(minutes: 335)),
+            ),
+          ],
+        );
+        // */
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,64 +206,7 @@ class _MyHomePageState extends State<MyHomePage> {
               }
               return '';
             },
-            details: [
-              SleepDetailChart(
-                stage: SleepStage.light,
-                startTime: DateTime.now(),
-                duration: 5,
-              ),
-              SleepDetailChart(
-                stage: SleepStage.deep,
-                startTime: DateTime.now().add(Duration(minutes: 5)),
-                duration: 5,
-              ),
-              SleepDetailChart(
-                stage: SleepStage.rem,
-                // width: perWidth * 40,
-                startTime: DateTime.now().add(Duration(minutes: 10)),
-                duration: 40,
-              ),
-              SleepDetailChart(
-                stage: SleepStage.light,
-                startTime: DateTime.now().add(Duration(minutes: 50)),
-                duration: 68,
-              ),
-              SleepDetailChart(
-                stage: SleepStage.deep,
-                startTime: DateTime.now().add(Duration(minutes: 118)),
-                duration: 42,
-              ),
-              SleepDetailChart(
-                stage: SleepStage.rem,
-                startTime: DateTime.now().add(Duration(minutes: 160)),
-                duration: 35,
-              ),
-              SleepDetailChart(
-                stage: SleepStage.light,
-                startTime: DateTime.now().add(Duration(minutes: 195)),
-                duration: 32,
-              ),
-              SleepDetailChart(
-                stage: SleepStage.deep,
-                startTime: DateTime.now().add(Duration(minutes: 227)),
-                duration: 33,
-              ),
-              SleepDetailChart(
-                stage: SleepStage.light,
-                startTime: DateTime.now().add(Duration(minutes: 260)),
-                duration: 33,
-              ),
-              SleepDetailChart(
-                stage: SleepStage.rem,
-                startTime: DateTime.now().add(Duration(minutes: 292)),
-                duration: 43,
-              ),
-              SleepDetailChart(
-                stage: SleepStage.awake,
-                startTime: DateTime.now().add(Duration(minutes: 290)),
-                duration: 4,
-              ),
-            ],
+            details: details,
           ),
         ),
       ),
