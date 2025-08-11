@@ -119,9 +119,9 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ];
 
-        // SleepDetail 转 SleepDetailChart
+        // SleepDetail 转 SleepDetailChart 示例
         /*
-        details = createSleepDurationData(
+        details = createSleepDetailChartDetails(
           totalDuration: 340,
           details: [
             SleepDetail(

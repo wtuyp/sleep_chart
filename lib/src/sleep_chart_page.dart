@@ -885,10 +885,10 @@ class SleepDetail {
 
 /// 创建睡眠时长图表数据
 /// 根据原始睡眠详情数据计算每个阶段在图表中的宽度和持续时间
-/// @param details 原始睡眠详情数据列表
 /// @param totalDuration 总时长（分钟），目前仅用于确认最后一个状态的时长
+/// @param details 原始睡眠详情数据列表
 /// @return 处理后的睡眠详情图表数据列表
-List<SleepDetailChart> createSleepDurationData({
+List<SleepDetailChart> createSleepDetailChartDetails({
   required int totalDuration,
   required List<SleepDetail> details,
 }) {
