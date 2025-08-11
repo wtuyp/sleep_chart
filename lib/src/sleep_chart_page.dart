@@ -734,6 +734,7 @@ class SleepDurationPainter extends CustomPainter {
         style: bottomInfoTextStyle,
       ),
       textDirection: TextDirection.ltr,
+      textAlign: TextAlign.end,
     );
 
     // 布局文本
