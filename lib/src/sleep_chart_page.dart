@@ -1,5 +1,7 @@
 /// 睡眠时长图表绘制器
 /// 根据传入的参数绘制睡眠时长图表，包括背景、网格线、标题、条形图和底部信息等
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class SleepDurationPainter extends CustomPainter {
@@ -142,7 +144,7 @@ class SleepDurationPainter extends CustomPainter {
       ..strokeCap = dividerPaintStyle.strokeCap;
 
     _drawHorizontalLines(canvas, size, dividerPaint);
-    _drawVerticalLines(canvas, size, dividerPaint);
+    // _drawVerticalLines(canvas, size, dividerPaint);
   }
 
   /// 绘制水平网格线
@@ -154,9 +156,10 @@ class SleepDurationPainter extends CustomPainter {
       final y = titleHeight + titleGap + (i * lineSpacing);
       double startX = 0;
       while (startX < size.width) {
+        double endX = min(startX + horizontalLineStyle.width, size.width);
         canvas.drawLine(
           Offset(startX, y),
-          Offset(startX + horizontalLineStyle.width, y),
+          Offset(endX, y),
           paint,
         );
         startX += horizontalLineStyle.width + horizontalLineStyle.space;
@@ -533,18 +536,18 @@ class SleepDurationPainter extends CustomPainter {
 
     // 创建文本样式
     final textTitleStyle = TextStyle(
-      color: Color(0xFF1B6BFF),
-      fontSize: 16,
+      color: Color(0xFF1F2021),
+      fontSize: 14,
     );
     final textTitleMinuteStyle = TextStyle(
-      color: Color(0xFF1B6BFF),
+      color: Color(0xFF1F2021),
       fontSize: 20,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w500,
     );
     final textSubTitleStyle = TextStyle(
-      color: Color(0xFF999999),
-      fontSize: 10,
-      fontWeight: FontWeight.bold,
+      color: Color(0xFF919599),
+      fontSize: 12,
+      fontWeight: FontWeight.normal,
     );
 
     // 根据睡眠阶段设置标题文本
@@ -580,7 +583,7 @@ class SleepDurationPainter extends CustomPainter {
       text: TextSpan(
         children: [
           TextSpan(
-            text: '$stageName ',
+            text: '$stageName: ',
             style: textTitleStyle,
           ),
           TextSpan(
@@ -627,7 +630,7 @@ class SleepDurationPainter extends CustomPainter {
 
     // 绘制半透明背景
     final bgPaint = Paint()
-      ..color = Color.fromRGBO(28, 107, 255, 0.03)
+      ..color = Color(0xFFEBECED)
       ..style = PaintingStyle.fill;
 
     final bgRect = RRect.fromRectAndRadius(
@@ -670,28 +673,28 @@ class SleepDurationPainter extends CustomPainter {
     );
 
     // 创建底部指示器画笔
-    final bottomRectPaint = Paint()
-      ..color = Color(0xFFF6F6F6)
-      ..style = PaintingStyle.fill;
-
-    final bottomBorderPaint = Paint()
-      ..color = Color(0xFFDADADA)
-      ..strokeWidth = 1.0
-      ..style = PaintingStyle.stroke;
-
-    // 绘制底部指示器
-    final rectWidth = 18.0;
-    final rectHeight = 9.0;
-    final rectX = centerX - rectWidth / 2;
-    final rectY = endY - rectHeight;
-
-    final rect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(rectX, rectY + rectHeight / 2, rectWidth, rectHeight),
-      Radius.circular(6),
-    );
-
-    canvas.drawRRect(rect, bottomRectPaint);
-    canvas.drawRRect(rect, bottomBorderPaint);
+    // final bottomRectPaint = Paint()
+    //   ..color = Color(0xFFF6F6F6)
+    //   ..style = PaintingStyle.fill;
+    //
+    // final bottomBorderPaint = Paint()
+    //   ..color = Color(0xFFDADADA)
+    //   ..strokeWidth = 1.0
+    //   ..style = PaintingStyle.stroke;
+    //
+    // // 绘制底部指示器
+    // final rectWidth = 18.0;
+    // final rectHeight = 9.0;
+    // final rectX = centerX - rectWidth / 2;
+    // final rectY = endY - rectHeight;
+    //
+    // final rect = RRect.fromRectAndRadius(
+    //   Rect.fromLTWH(rectX, rectY + rectHeight / 2, rectWidth, rectHeight),
+    //   Radius.circular(6),
+    // );
+    //
+    // canvas.drawRRect(rect, bottomRectPaint);
+    // canvas.drawRRect(rect, bottomBorderPaint);
   }
 
   /// 绘制底部信息
@@ -925,7 +928,7 @@ class SleepDurationChartWidget extends StatefulWidget {
     required this.titleGap,
     required this.xAxisTitleOffset,
     required this.xAxisTitleHeight,
-    required this.bgColor,
+    this.bgColor = Colors.white,
     this.horizontalLineStyle = const LineStyle(width: 5.0, space: 3.0),
     this.verticalLineStyle = const LineStyle(width: 5.0, space: 3.0),
     this.horizontalLineCount = 8,

@@ -40,6 +40,8 @@ class _MyHomePageState extends State<MyHomePage> {
     SleepStage.light: Color(0xFFB570FF),
     SleepStage.deep: Color(0xFF8480FF),
   };
+  DateTime startTime = DateTime.now();
+  late DateTime endTime = startTime.add(Duration(minutes: 340));
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +64,16 @@ class _MyHomePageState extends State<MyHomePage> {
             horizontalLineCount: 8,
             bgColor: Color(0xFFF5F6F7),
             stageColors: stageColors,
-            startTime: DateTime.now(),
-            endTime: DateTime.now().add(Duration(minutes: 340)),
+            startTime: startTime,
+            endTime: endTime,
+            dateFormatter: (DateTime date) {
+              if (date == startTime) {
+                return '${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}入睡\n${date.month.toString().padLeft(2, '0')}/${date.day.toString().padLeft(2, '0')}';
+              } else if (date == endTime) {
+                return '${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}醒来\n${date.month.toString().padLeft(2, '0')}/${date.day.toString().padLeft(2, '0')}';
+              }
+              return '';
+            },
             details: [
               SleepDetailChart(
                 stage: SleepStage.light,
