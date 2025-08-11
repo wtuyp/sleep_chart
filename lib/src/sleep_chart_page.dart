@@ -973,12 +973,12 @@ class _SleepDurationChartWidgetState extends State<SleepDurationChartWidget> {
         return GestureDetector(
           // 开始水平拖动
           onHorizontalDragStart: (details) {
+            _indicatorPosition = details.localPosition.dx;
           },
           // 水平拖动更新
           onHorizontalDragUpdate: (details) {
             setState(() {
-              _indicatorPosition = (_indicatorPosition + details.delta.dx)
-                  .clamp(0.0, constraints.maxWidth);
+              _indicatorPosition = details.localPosition.dx.clamp(0.0, constraints.maxWidth);
             });
           },
           // 结束水平拖动
