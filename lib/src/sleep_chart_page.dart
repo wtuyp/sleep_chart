@@ -307,13 +307,13 @@ class SleepDurationPainter extends CustomPainter {
     required double centerX,
     required double centerY,
     required double left,
-    required SleepStage currentModel,
+    required SleepStage currentStage,
     required int currentIndex,
     required Corner corner,
   }) {
     // 创建填充画笔
     final clippedPaint = Paint()
-      ..color = stageColors[currentModel]!
+      ..color = stageColors[currentStage]!
       ..style = PaintingStyle.fill;
 
     // 创建第一个裁剪路径
@@ -389,8 +389,8 @@ class SleepDurationPainter extends CustomPainter {
     required double left,
   }) {
     // 获取当前条形和上一个条形的睡眠阶段
-    final currentModel = details[currentIndex].stage;
-    final prevModel = currentIndex > 0 ? details[currentIndex - 1].stage : null;
+    final currentStage = details[currentIndex].stage;
+    final prevStage = currentIndex > 0 ? details[currentIndex - 1].stage : null;
 
     // 判断是否是第一个或最后一个条形
     final isFirst = currentIndex == 0;
@@ -398,11 +398,11 @@ class SleepDurationPainter extends CustomPainter {
 
     // 计算当前条形的位置
     final currentY = titleHeight + titleGap +
-        (getHeightFromStage(currentModel) * heightUnit * chartHeight);
+        (getHeightFromStage(currentStage) * heightUnit * chartHeight);
 
     var parameter = {
       'canvas': canvas,
-      'currentModel': currentModel,
+      'currentStage': currentStage,
       'currentIndex': currentIndex,
       'left': left,
     };
@@ -415,13 +415,21 @@ class SleepDurationPainter extends CustomPainter {
       parameter['centerY'] = centerY;
 
       // 根据睡眠阶段选择角落位置
-      if (currentModel == SleepStage.deep) {
+      if (currentStage == SleepStage.deep) {
         parameter['corner'] = Corner.topLeft;
-      } else if (currentModel == SleepStage.light && prevModel == SleepStage.rem) {
-        parameter['corner'] = Corner.topLeft;
-      } else if (currentModel == SleepStage.rem) {
-        parameter['corner'] = Corner.bottomLeft;
-      } else if (currentModel == SleepStage.light && prevModel == SleepStage.deep) {
+      } else if (currentStage == SleepStage.light) {
+        if (prevStage == SleepStage.rem || prevStage == SleepStage.awake) {
+          parameter['corner'] = Corner.topLeft;
+        } else if (prevStage == SleepStage.deep) {
+          parameter['corner'] = Corner.bottomLeft;
+        }
+      } else if (currentStage == SleepStage.rem) {
+        if (prevStage == SleepStage.deep || prevStage == SleepStage.light) {
+          parameter['corner'] = Corner.bottomLeft;
+        } else if (prevStage == SleepStage.awake) {
+          parameter['corner'] = Corner.topLeft;
+        }
+      } else if (currentStage == SleepStage.awake) {
         parameter['corner'] = Corner.bottomLeft;
       }
 
@@ -430,7 +438,7 @@ class SleepDurationPainter extends CustomPainter {
         centerX: parameter['centerX'] as double,
         centerY: parameter['centerY'] as double,
         left: parameter['left'] as double,
-        currentModel: parameter['currentModel'] as SleepStage,
+        currentStage: parameter['currentStage'] as SleepStage,
         currentIndex: parameter['currentIndex'] as int,
         corner: parameter['corner'] as Corner,
       );
@@ -447,16 +455,22 @@ class SleepDurationPainter extends CustomPainter {
       parameter['centerY'] = centerY;
 
       // 根据睡眠阶段选择角落位置
-      if (currentModel == SleepStage.deep) {
+      if (currentStage == SleepStage.deep) {
         parameter['corner'] = Corner.topRight;
-      } else if (currentModel == SleepStage.rem) {
-        parameter['corner'] = Corner.bottomRight;
-      } else if (currentModel == SleepStage.light) {
-        if (nextModel == SleepStage.rem) {
+      } else if (currentStage == SleepStage.light) {
+        if (nextModel == SleepStage.rem || nextModel == SleepStage.awake) {
           parameter['corner'] = Corner.topRight;
         } else if (nextModel == SleepStage.deep) {
           parameter['corner'] = Corner.bottomRight;
         }
+      } else if (currentStage == SleepStage.rem) {
+        if (nextModel == SleepStage.deep || nextModel == SleepStage.light) {
+          parameter['corner'] = Corner.bottomRight;
+        } else if (nextModel == SleepStage.awake) {
+          parameter['corner'] = Corner.topRight;
+        }
+      } else if (currentStage == SleepStage.awake) {
+        parameter['corner'] = Corner.bottomRight;
       }
 
       _drawClippedCorner(
@@ -464,7 +478,7 @@ class SleepDurationPainter extends CustomPainter {
         centerX: parameter['centerX'] as double,
         centerY: parameter['centerY'] as double,
         left: parameter['left'] as double,
-        currentModel: parameter['currentModel'] as SleepStage,
+        currentStage: parameter['currentStage'] as SleepStage,
         currentIndex: parameter['currentIndex'] as int,
         corner: parameter['corner'] as Corner,
       );
@@ -536,17 +550,24 @@ class SleepDurationPainter extends CustomPainter {
     // 根据睡眠阶段设置标题文本
     String stageName;
     switch (currentStage.stage) {
-      case SleepStage.light:
-        stageName = 'Light';
+      case SleepStage.unknown:
+        stageName = '未知';
         break;
-      case SleepStage.deep:
-        stageName = 'Deep';
+      case SleepStage.notWearing:
+        stageName = '未佩戴';
+        break;
+      case SleepStage.awake:
+        stageName = '清醒';
         break;
       case SleepStage.rem:
-        stageName = 'REM';
+        stageName = '快速动眼';
         break;
-      default:
-        stageName = 'Unknown';
+      case SleepStage.light:
+        stageName = '浅睡';
+        break;
+      case SleepStage.deep:
+        stageName = '深睡';
+        break;
     }
 
     // 格式化时间
@@ -559,7 +580,7 @@ class SleepDurationPainter extends CustomPainter {
       text: TextSpan(
         children: [
           TextSpan(
-            text: stageName,
+            text: '$stageName ',
             style: textTitleStyle,
           ),
           TextSpan(
@@ -567,7 +588,7 @@ class SleepDurationPainter extends CustomPainter {
             style: textTitleMinuteStyle,
           ),
           TextSpan(
-            text: 'min',
+            text: '分钟',
             style: textTitleStyle,
           ),
         ],
@@ -760,18 +781,6 @@ enum Corner {
   bottomRight,
 }
 
-/// 睡眠详情数据类
-/// 用于存储单个睡眠阶段的基本信息
-class SleepDetail {
-  final SleepStage stage; // 睡眠阶段类型
-  final DateTime time; // 阶段发生时间
-
-  SleepDetail({
-    required this.stage,
-    required this.time,
-  });
-}
-
 /// 睡眠详情图表数据类
 /// 用于存储图表绘制所需的睡眠阶段详细信息
 class SleepDetailChart {
@@ -833,14 +842,26 @@ int getHeightFromStage(SleepStage stage) {
     case SleepStage.awake:
       return 0;
     case SleepStage.rem:
-      return 0;
-    case SleepStage.light:
       return 2;
-    case SleepStage.deep:
+    case SleepStage.light:
       return 4;
+    case SleepStage.deep:
+      return 6;
     default:
       return 0;
   }
+}
+
+/// 睡眠详情数据类
+/// 用于存储单个睡眠阶段的基本信息
+class SleepDetail {
+  final SleepStage stage; // 睡眠阶段类型
+  final DateTime time; // 阶段发生时间
+
+  SleepDetail({
+    required this.stage,
+    required this.time,
+  });
 }
 
 /// 创建睡眠时长图表数据
