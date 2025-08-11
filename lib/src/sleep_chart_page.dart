@@ -426,21 +426,9 @@ class SleepDurationPainter extends CustomPainter {
       parameter['centerY'] = centerY;
 
       // 根据睡眠阶段选择角落位置
-      if (currentStage == SleepStage.deep) {
+      if (currentStage.index > prevStage!.index) {
         parameter['corner'] = Corner.topLeft;
-      } else if (currentStage == SleepStage.light) {
-        if (prevStage == SleepStage.rem || prevStage == SleepStage.awake) {
-          parameter['corner'] = Corner.topLeft;
-        } else if (prevStage == SleepStage.deep) {
-          parameter['corner'] = Corner.bottomLeft;
-        }
-      } else if (currentStage == SleepStage.rem) {
-        if (prevStage == SleepStage.deep || prevStage == SleepStage.light) {
-          parameter['corner'] = Corner.bottomLeft;
-        } else if (prevStage == SleepStage.awake) {
-          parameter['corner'] = Corner.topLeft;
-        }
-      } else if (currentStage == SleepStage.awake) {
+      } else {
         parameter['corner'] = Corner.bottomLeft;
       }
 
@@ -457,7 +445,7 @@ class SleepDurationPainter extends CustomPainter {
 
     // 处理右上角和右下角（如果不是最后一个条形）
     if (!isLast) {
-      final nextModel = details[currentIndex + 1].stage;
+      final nextStage = details[currentIndex + 1].stage;
 
       // 计算中心点
       final centerX = left + details[currentIndex].width!;
@@ -466,21 +454,9 @@ class SleepDurationPainter extends CustomPainter {
       parameter['centerY'] = centerY;
 
       // 根据睡眠阶段选择角落位置
-      if (currentStage == SleepStage.deep) {
+      if (currentStage.index > nextStage.index) {
         parameter['corner'] = Corner.topRight;
-      } else if (currentStage == SleepStage.light) {
-        if (nextModel == SleepStage.rem || nextModel == SleepStage.awake) {
-          parameter['corner'] = Corner.topRight;
-        } else if (nextModel == SleepStage.deep) {
-          parameter['corner'] = Corner.bottomRight;
-        }
-      } else if (currentStage == SleepStage.rem) {
-        if (nextModel == SleepStage.deep || nextModel == SleepStage.light) {
-          parameter['corner'] = Corner.bottomRight;
-        } else if (nextModel == SleepStage.awake) {
-          parameter['corner'] = Corner.topRight;
-        }
-      } else if (currentStage == SleepStage.awake) {
+      } else {
         parameter['corner'] = Corner.bottomRight;
       }
 
