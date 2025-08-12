@@ -192,7 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
             titleHeight: 45.0,
             titleGap: 10.0,
             xAxisTitleOffset: 8.0,
-            xAxisTitleHeight: 15.0,
+            xAxisTitleHeight: 30.0,
             horizontalLineCount: 7,
             bgColor: Color(0xFFF5F6F7),
             stageColors: stageColors,

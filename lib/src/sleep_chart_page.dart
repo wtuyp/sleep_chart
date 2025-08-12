@@ -1,9 +1,9 @@
-/// 睡眠时长图表绘制器
-/// 根据传入的参数绘制睡眠时长图表，包括背景、网格线、标题、条形图和底部信息等
-import 'dart:math';
 
+import 'dart:math';
 import 'package:flutter/material.dart';
 
+/// 睡眠时长图表绘制器
+/// 根据传入的参数绘制睡眠时长图表，包括背景、网格线、标题、条形图和底部信息等
 class SleepDurationPainter extends CustomPainter {
   /// 高度单位，用于计算条形图的高度
   final double heightUnit;
@@ -89,7 +89,7 @@ class SleepDurationPainter extends CustomPainter {
     required this.minuteWidth,
     this.horizontalLineStyle = const LineStyle(width: 5.0, space: 3.0),
     this.verticalLineStyle = const LineStyle(width: 5.0, space: 3.0),
-    this.horizontalLineCount = 8, // 默认8个间隔，9条线
+    this.horizontalLineCount = 7, // 默认7个间隔，8条线
     this.dividerPaintStyle = const PaintStyle(
       color: Color(0xFFEEEEEE),
       strokeWidth: 1.0,
@@ -121,9 +121,9 @@ class SleepDurationPainter extends CustomPainter {
     // 根据状态决定是否绘制指示器
     if (showIndicator) {
       //绘制指示条
-      _drawIndicator(canvas, size);
+      _drawIndicator(canvas, size, Color(0xFFEBECED),);
       // 绘制标题
-      _drawTitle(canvas, size);
+      _drawTitle(canvas, size, Color(0xFFEBECED),);
     }
     // 绘制条形图
     _drawBarArea(canvas, size);
@@ -134,7 +134,6 @@ class SleepDurationPainter extends CustomPainter {
   /// 绘制背景
   /// 在图表区域绘制纯色背景
   void _drawBackground(Canvas canvas, Size size) {
-    final chartHeight = (size.height - titleHeight - titleGap - xAxisTitleOffset - xAxisTitleHeight);
     final backgroundPaint = Paint()
       ..color = bgColor
       ..style = PaintingStyle.fill;
@@ -223,6 +222,11 @@ class SleepDurationPainter extends CustomPainter {
         ..color = stageColors[details[i].stage]!
         ..style = PaintingStyle.fill;
 
+      final strokePaint = Paint()
+        ..color = stageColors[details[i].stage]!
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1;
+
       // 缓存宽度
       details[i].width ??= minuteWidth * details[i].duration;
 
@@ -234,10 +238,12 @@ class SleepDurationPainter extends CustomPainter {
           details[i].width!,
           barHeight,
         ),
-        Radius.circular(10),
+        Radius.circular(6),
       );
 
+
       canvas.drawRRect(rect, paint);
+      canvas.drawRRect(rect, strokePaint);
 
       // 绘制连接处的曲线边缘
       _drawCurveEdge(
@@ -252,7 +258,7 @@ class SleepDurationPainter extends CustomPainter {
           canvas: canvas,
           currentIndex: i,
           left: left,
-          strokeWidth: 1,
+          strokeWidth: 2,
         );
       }
     }
@@ -327,6 +333,11 @@ class SleepDurationPainter extends CustomPainter {
       ..color = stageColors[currentStage]!
       ..style = PaintingStyle.fill;
 
+    final strokePaint = Paint()
+      ..color = stageColors[currentStage]!
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+
     // 创建第一个裁剪路径
     final cornerPath = Path();
     cornerPath.moveTo(centerX, centerY);
@@ -368,7 +379,7 @@ class SleepDurationPainter extends CustomPainter {
           RRect.fromRectAndRadius(
             Rect.fromLTWH(left, centerY - barHeight,
                 details[currentIndex].width!, barHeight / 2),
-            Radius.circular(10),
+            Radius.circular(6),
           ),
         );
         break;
@@ -378,7 +389,7 @@ class SleepDurationPainter extends CustomPainter {
           RRect.fromRectAndRadius(
             Rect.fromLTWH(left, centerY + barHeight / 2,
                 details[currentIndex].width!, barHeight / 2),
-            Radius.circular(10),
+            Radius.circular(6),
           ),
         );
         break;
@@ -390,6 +401,7 @@ class SleepDurationPainter extends CustomPainter {
 
     // 绘制最终路径
     canvas.drawPath(clippedPath, clippedPaint);
+    canvas.drawPath(clippedPath, strokePaint);
   }
 
   /// 绘制曲线边缘
@@ -477,7 +489,7 @@ class SleepDurationPainter extends CustomPainter {
   /// 注意：bar 区间的累加方式必须与 _drawBarArea 完全一致，
   /// 即currentX的累加方式和_drawBarArea的left保持一致，
   /// 否则指示器与bar的视觉区间会出现偏差。
-  void _drawTitle(Canvas canvas, Size size) {
+  void _drawTitle(Canvas canvas, Size size, Color color) {
     // 打印当前指示器位置，便于调试
     // ignore: avoid_print
 
@@ -598,10 +610,12 @@ class SleepDurationPainter extends CustomPainter {
 
     // 计算背景矩形位置
     final bgWidth = 129.0;
-    final bgHeight = 45.0;
+    final bgHeight = titleHeight;
 
     // 计算标题位置，使用当前阶段的中心点
-    double bgX = stageStartX + (currentStateWidth / 2) - (bgWidth / 2);
+    // double bgX = stageStartX + (currentStateWidth / 2) - (bgWidth / 2);
+    // 计算标题位置，使用手势接触位置
+    double bgX = indicatorPosition - (bgWidth / 2);
 
     // 限制标题不超出边界
     if (bgX < 0) {
@@ -614,7 +628,7 @@ class SleepDurationPainter extends CustomPainter {
 
     // 绘制半透明背景
     final bgPaint = Paint()
-      ..color = Color(0xFFEBECED)
+      ..color = color
       ..style = PaintingStyle.fill;
 
     final bgRect = RRect.fromRectAndRadius(
@@ -625,7 +639,7 @@ class SleepDurationPainter extends CustomPainter {
 
     // 创建边框画笔
     final borderPaint = Paint()
-      ..color = Color(0xFFEBECED)
+      ..color = color
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
     canvas.drawRRect(bgRect, borderPaint);
@@ -643,12 +657,10 @@ class SleepDurationPainter extends CustomPainter {
 
   /// 绘制指示器
   /// 在图表中央绘制垂直指示线和底部指示器
-  void _drawIndicator(Canvas canvas, Size size) {
-    final chartHeight = size.height - titleHeight - titleGap - xAxisTitleOffset - xAxisTitleHeight;
-
+  void _drawIndicator(Canvas canvas, Size size, Color color) {
     // 创建指示线画笔
     final indicatorPaint = Paint()
-      ..color = Color(0xFFDADADA)
+      ..color = color
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 
@@ -929,7 +941,7 @@ class SleepDurationChartWidget extends StatefulWidget {
     this.bgColor = Colors.white,
     this.horizontalLineStyle = const LineStyle(width: 5.0, space: 3.0),
     this.verticalLineStyle = const LineStyle(width: 5.0, space: 3.0),
-    this.horizontalLineCount = 8,
+    this.horizontalLineCount = 7,
     this.dividerPaintStyle = const PaintStyle(
       color: Color(0xFFEEEEEE),
       strokeWidth: 1.0,
@@ -971,6 +983,8 @@ class _SleepDurationChartWidgetState extends State<SleepDurationChartWidget> {
         return GestureDetector(
           // 开始水平拖动
           onHorizontalDragStart: (details) {
+            if (widget.details.isEmpty) return;
+
             setState(() {
               _indicatorPosition = details.localPosition.dx;
               _showIndicator = true;
@@ -978,13 +992,17 @@ class _SleepDurationChartWidgetState extends State<SleepDurationChartWidget> {
           },
           // 水平拖动更新
           onHorizontalDragUpdate: (details) {
+            if (widget.details.isEmpty) return;
+
             setState(() {
-              _indicatorPosition = details.localPosition.dx.clamp(0.0, constraints.maxWidth);
+              _indicatorPosition = details.localPosition.dx.clamp(0.0, width);
               _showIndicator = true;
             });
           },
           // 结束水平拖动
           onHorizontalDragEnd: (details) {
+            if (widget.details.isEmpty) return;
+
             setState(() {
               _showIndicator = false; // 隐藏指示器
             });
