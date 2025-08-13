@@ -66,12 +66,6 @@ SleepDurationChartWidget(
     SleepStage.deep: Colors.green[300]!,
     SleepStage.rem: Colors.orange[300]!,
   },
-  sleepStageStyles: [
-    SleepStageStyle(
-      gradientColor: [Colors.blue, Colors.green],
-      value: SleepStageStyleValue.deepAndLight
-    ),
-  ],
   dateFormatter: (date) => DateFormat('HH:mm').format(date),
 )
 ```
@@ -91,7 +85,6 @@ SleepDurationChartWidget(
 | `horizontalLineStyle` | Horizontal grid line style        | width:5.0, space:3.0 | No       |
 | `verticalLineStyle`   | Vertical grid line style          | width:5.0, space:3.0 | No       |
 | `stageColors`         | Color mapping for sleep stages    | Built-in defaults    | No       |
-| `sleepStageStyles`    | Transition styles between stages  | 3 default gradients  | No       |
 | `dateFormatter`       | Custom date/time formatter        | MM-dd HH:mm          | No       |
 
 ## Data Structure
@@ -101,10 +94,9 @@ SleepDurationChartWidget(
 ```dart
 class SleepDetailChart {
   final SleepStage model;   // Sleep stage type
-  final double width;      // Visual width in chart
   final DateTime startTime;// Stage start time
-  final DateTime endTime;  // Stage end time
   final int duration;      // Duration in minutes
+  double? width;      // Visual width in chart
 }
 ```
 
@@ -115,9 +107,7 @@ List<SleepDetailChart> generateSleepData() {
   return [
     SleepDetailChart(
       model: SleepStage.light,
-      width: 60,
       startTime: DateTime.now().subtract(Duration(hours: 8)),
-      endTime: DateTime.now().subtract(Duration(hours: 7, minutes: 30)),
       duration: 30,
     ),
     // Add more stages...
@@ -127,7 +117,6 @@ List<SleepDetailChart> generateSleepData() {
 
 ## Important Notes
 
-1. **Width Calculation**: The `width` values should sum to the total chart width
 2. **Stage Colors**: Must provide colors for all SleepStage enum values
 3. **Time Formatting**: Use 24-hour format for best results
 4. **Touch Interaction**: Indicator position updates automatically during dragging
@@ -166,13 +155,6 @@ class MyApp extends StatelessWidget {
                 SleepStage.deep: Color(0xFF21B2A1),
                 SleepStage.rem: Color(0xFFFCD166),
               },
-              sleepStageStyles: [
-                SleepStageStyle(
-                  gradientColor: [Color(0xFF4870F3), Color(0xFF21B2A1)],
-                  value: SleepStageStyleValue.deepAndLight
-                ),
-                // Add more transition styles...
-              ],
             ),
           ),
         ),
