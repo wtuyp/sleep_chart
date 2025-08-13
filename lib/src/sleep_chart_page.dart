@@ -44,28 +44,27 @@ class SleepDurationPainter extends CustomPainter {
   final Map<SleepStage, Color> stageColors;
 
   /// 底部信息的文本样式
-  final TextStyle bottomInfoTextStyle;
+  final TextStyle bottomDateTextStyle;
   /// 日期格式化函数
-  final String Function(DateTime) dateFormatter;
+  final String Function(DateTime) bottomDateFormatter;
 
   /// 默认的睡眠阶段颜色映射
   static final Map<SleepStage, Color> _defaultStageColors = {
-    SleepStage.awake: Color(0xFFFF6B6B),  // 清醒 -红色
+    SleepStage.awake: Color(0xFFFF6B6B),  // 清醒 - 红色
     SleepStage.rem: Color(0xFFFFC870),    // 快速眼动 - 黄色
     SleepStage.light: Color(0xFFB570FF),  // 浅睡眠 - 紫色
     SleepStage.deep: Color(0xFF8480FF),   // 深睡眠 - 蓝色
   };
 
   /// 默认的底部信息文本样式
-  static const TextStyle _defaultBottomInfoTextStyle = TextStyle(
+  static const TextStyle _defaultBottomDateTextStyle = TextStyle(
     color: Color(0xFF666666),
-    fontSize: 10,
-    height: 14.0/10.0,
+    fontSize: 11,
+    height: 1.2,
   );
-
-  /// 默认的日期格式化函数
+  /// 默认的底部日期格式化函数
   /// 格式：MM-DD HH:mm
-  static String _defaultDateFormatter(DateTime date) {
+  static String _defaultBottomDateFormatter(DateTime date) {
     return '${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
   }
 
@@ -97,13 +96,13 @@ class SleepDurationPainter extends CustomPainter {
       strokeCap: StrokeCap.round,
     ),
     Map<SleepStage, Color>? stageColors,
-    TextStyle? bottomInfoTextStyle,
-    String Function(DateTime)? dateFormatter,
+    TextStyle? bottomDateTextStyle,
+    String Function(DateTime)? bottomDateFormatter,
     this.indicatorPosition = 0.0, // 默认位置为0
     this.showIndicator = false,
   }) : this.stageColors = stageColors ?? _defaultStageColors,
-        this.bottomInfoTextStyle = bottomInfoTextStyle ?? _defaultBottomInfoTextStyle,
-        this.dateFormatter = dateFormatter ?? _defaultDateFormatter;
+        this.bottomDateTextStyle = bottomDateTextStyle ?? _defaultBottomDateTextStyle,
+        this.bottomDateFormatter = bottomDateFormatter ?? _defaultBottomDateFormatter;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -704,14 +703,14 @@ class SleepDurationPainter extends CustomPainter {
   /// 显示开始时间和结束时间
   void _drawBottomInfo(Canvas canvas, Size size) {
     // 格式化日期
-    final startDateStr = dateFormatter(startTime);
-    final endDateStr = dateFormatter(endTime);
+    final startDateStr = bottomDateFormatter(startTime);
+    final endDateStr = bottomDateFormatter(endTime);
 
     // 创建日期文本画笔
     final startDatePainter = TextPainter(
       text: TextSpan(
         text: startDateStr,
-        style: bottomInfoTextStyle,
+        style: bottomDateTextStyle,
       ),
       textDirection: TextDirection.ltr,
     );
@@ -719,7 +718,7 @@ class SleepDurationPainter extends CustomPainter {
     final endDatePainter = TextPainter(
       text: TextSpan(
         text: endDateStr,
-        style: bottomInfoTextStyle,
+        style: bottomDateTextStyle,
       ),
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.end,
@@ -802,15 +801,6 @@ class SleepDetailChart {
     required this.duration,
     this.width,
   });
-
-  /// 创建测试用的睡眠详情图表数据
-  factory SleepDetailChart.withTest() {
-    return SleepDetailChart(
-      stage: SleepStage.light,
-      startTime: DateTime.now(),
-      duration: 30,
-    );
-  }
 }
 
 /// 睡眠阶段枚举
@@ -843,7 +833,7 @@ int getModeFromStage(SleepStage stage) {
 }
 
 /// 获取睡眠阶段在图表中的高度值
-/// 用于确定不同睡眠阶段在图表中的显示高度
+/// 用于确定不同睡眠阶段在图表中的显示高度，越下面值越大
 int getHeightFromStage(SleepStage stage) {
   switch (stage) {
     case SleepStage.awake:
@@ -929,7 +919,7 @@ class SleepDurationChartWidget extends StatefulWidget {
   final String Function(DateTime)? dateFormatter; // 日期格式化函数
 
   const SleepDurationChartWidget({
-    Key? key,
+    super.key,
     required this.details,
     required this.startTime,
     required this.endTime,
@@ -951,7 +941,7 @@ class SleepDurationChartWidget extends StatefulWidget {
     this.stageColors,
     this.bottomInfoTextStyle,
     this.dateFormatter,
-  }) : super(key: key);
+  });
 
   @override
   State<SleepDurationChartWidget> createState() => _SleepDurationChartWidgetState();
@@ -1023,8 +1013,8 @@ class _SleepDurationChartWidgetState extends State<SleepDurationChartWidget> {
               horizontalLineCount: widget.horizontalLineCount,
               dividerPaintStyle: widget.dividerPaintStyle,
               stageColors: widget.stageColors,
-              bottomInfoTextStyle: widget.bottomInfoTextStyle,
-              dateFormatter: widget.dateFormatter,
+              bottomDateTextStyle: widget.bottomInfoTextStyle,
+              bottomDateFormatter: widget.dateFormatter,
               indicatorPosition: _indicatorPosition,
               showIndicator: _showIndicator,
               minuteWidth: _minuteWidth,
